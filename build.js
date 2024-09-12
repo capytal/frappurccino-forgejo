@@ -12,6 +12,16 @@ const builder = (flavor, accent) => `
 $accent: $${accent};
 $isDark: ${flavor !== "latte"};
 @import "theme";
+
+$overlay2: #202020;
+$overlay1: #191919;
+$overlay0: #181818;
+$surface2: #141414;
+$surface1: #131313;
+$surface0: #121212;
+$base: #111111;
+$mantle: #101010;
+$crust: #000000;
 `;
 
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url));

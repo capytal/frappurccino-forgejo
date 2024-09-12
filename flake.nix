@@ -2,10 +2,16 @@
   description = "My development environment";
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    gitignore = {
+      url = "github:hercules-ci/gitignore.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
   outputs = {
     self,
     nixpkgs,
+    gitignore,
+    ...
   }: let
     systems = [
       "x86_64-linux"
@@ -19,15 +25,34 @@
       in
         f system pkgs);
   in {
-    nixosModules = {
-      dot013-environment = import ./configuration.nix;
-      default = self.nixosModules.dot013-environment;
-    };
-    homeManagerModules = {
-      dot013-environment = import ./home.nix;
-      default = self.homeManagerModules.dot013-environment;
-    };
-    homeManagerModule = self.homeManagerModules.dot013-environment;
+    defaultPackage = forAllSystems (system: pkgs: let
+      app = pkgs.buildNpmPackage rec {
+        pname = "frappurccino-forgejo";
+        version = "0.1.0";
+        src = gitignore.lib.gitignoreSource ./.;
+
+        npmDepsHash = "sha256-4wArkv3O5rhuDlrUC05K1jIz2ZLdC8M48ILz+O+O7CU=";
+        npmPackFlags = ["--ignore-scripts"];
+
+        buildPhase = ''
+          runHook preBuild
+
+          npm run build
+
+          runHook postBuild
+        '';
+
+        installPhase = ''
+          runHook preInstall
+
+          mkdir -p $out
+          cp -r dist $out/css
+
+          runHook postInstall
+        '';
+      };
+    in
+      app);
     devShells = forAllSystems (system: pkgs: {
       default = pkgs.mkShell {
         buildInputs = with pkgs; [

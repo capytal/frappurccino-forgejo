@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - run: apt-get update -y && apt-get install git unzip
+      - run: apt-get update -y && apt-get install -y git unzip
 
       - uses: https://code.forgejo.org/actions/checkout@v4
 

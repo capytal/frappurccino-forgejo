@@ -25,7 +25,7 @@
       in
         f system pkgs);
   in {
-    defaultPackage = forAllSystems (system: pkgs: let
+    packages = forAllSystems (system: pkgs: let
       app = pkgs.buildNpmPackage rec {
         pname = "frappurccino-forgejo";
         version = "0.1.0";
@@ -51,8 +51,9 @@
           runHook postInstall
         '';
       };
-    in
-      app);
+    in {
+      default = app;
+    });
     devShells = forAllSystems (system: pkgs: {
       default = pkgs.mkShell {
         buildInputs = with pkgs; [

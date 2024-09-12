@@ -28,7 +28,7 @@
     packages = forAllSystems (system: pkgs: let
       app = pkgs.buildNpmPackage rec {
         pname = "frappurccino-forgejo";
-        version = "0.1.0";
+        version = "0.1.1";
         src = gitignore.lib.gitignoreSource ./.;
 
         npmDepsHash = "sha256-4wArkv3O5rhuDlrUC05K1jIz2ZLdC8M48ILz+O+O7CU=";

@@ -49,7 +49,7 @@ for (const flavor of flavors) {
     });
 
     fs.writeFileSync(
-      path.join(__dirname, "dist", `theme-catppuccin-${flavor}-${accent}.css`),
+      path.join(__dirname, "dist", `theme-frappurccino-${flavor}-${accent}.css`),
       result.css,
     );
   }

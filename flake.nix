@@ -24,11 +24,10 @@
         pkgs = import nixpkgs {inherit system;};
       in
         f system pkgs);
-  in {
-    packages = forAllSystems (system: pkgs: let
-      app = pkgs.buildNpmPackage rec {
+    app = pkgs:
+      pkgs.buildNpmPackage rec {
         pname = "frappurccino-forgejo";
-        version = "0.1.1";
+        version = "0.1.0";
         src = gitignore.lib.gitignoreSource ./.;
 
         npmDepsHash = "sha256-4wArkv3O5rhuDlrUC05K1jIz2ZLdC8M48ILz+O+O7CU=";
@@ -51,9 +50,11 @@
           runHook postInstall
         '';
       };
-    in {
-      default = app;
+  in {
+    packages = forAllSystems (system: pkgs: {
+      default = app pkgs;
     });
+    defaultPackage = forAllSystems (system: pkgs: app pkgs);
     devShells = forAllSystems (system: pkgs: {
       default = pkgs.mkShell {
         buildInputs = with pkgs; [

@@ -59,11 +59,7 @@ for (const flavor of flavors) {
 // refactor this part out to a common import, since ctp/ctp & ctp/userstyles
 // are both using the same base function
 /** @type ({readme: string, section: string, newContent: string}) => string */
-const updateReadme = ({
-  readme,
-  section,
-  newContent,
-}) => {
+const updateReadme = ({ readme, section, newContent }) => {
   const preamble =
     "<!-- the following section is auto-generated, do not edit -->";
   const startMarker = `<!-- AUTOGEN:${section.toUpperCase()} START -->`;
@@ -86,14 +82,9 @@ const newcontent = updateReadme({
   newContent: `
 \`\`\`
 [ui]
-THEMES = ${
-    flavors
-      .map((f) =>
-        accents
-          .map((a) => `catppuccin-${f}-${a}`)
-          .join(",")
-      ).join(",")
-  }
+THEMES = ${flavors
+    .map((f) => accents.map((a) => `catppuccin-${f}-${a}`).join(","))
+    .join(",")}
 \`\`\`
 `,
 });

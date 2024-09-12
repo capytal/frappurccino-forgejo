@@ -1,17 +1,20 @@
 #!/usr/bin/env -S deno run -A
 
-import * as path from "std/path";
+import path from "node:path";
+import fs from "node:fs";
+import url from "node:url";
 import * as sass from "sass";
-import ctp from "npm:@catppuccin/palette";
+import * as ctp from "@catppuccin/palette";
 
-const builder = (flavor: string, accent: string) => `
+/** @type (flavor: string, accent: string) => string */
+const builder = (flavor, accent) => `
 @import "@catppuccin/palette/scss/${flavor}";
 $accent: $${accent};
 $isDark: ${flavor !== "latte"};
 @import "theme";
 `;
 
-const __dirname = path.dirname(path.fromFileUrl(import.meta.url));
+const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
 
 const accents = [
   "rosewater",
@@ -30,9 +33,11 @@ const accents = [
   "lavender",
 ];
 
-Deno.mkdirSync(path.join(__dirname, "dist"), { recursive: true });
+if (!fs.existsSync(path.join(__dirname, "dist"))) {
+  fs.mkdirSync(path.join(__dirname, "dist"), { recursive: true });
+}
 
-const flavors = Object.keys(ctp.variants);
+const flavors = Object.keys(ctp.flavors);
 for (const flavor of flavors) {
   for (const accent of accents) {
     const input = builder(flavor, accent);
@@ -43,7 +48,7 @@ for (const flavor of flavors) {
       ],
     });
 
-    Deno.writeTextFileSync(
+    fs.writeFileSync(
       path.join(__dirname, "dist", `theme-catppuccin-${flavor}-${accent}.css`),
       result.css,
     );
@@ -53,15 +58,12 @@ for (const flavor of flavors) {
 // TODO:
 // refactor this part out to a common import, since ctp/ctp & ctp/userstyles
 // are both using the same base function
+/** @type ({readme: string, section: string, newContent: string}) => string */
 const updateReadme = ({
   readme,
   section,
   newContent,
-}: {
-  readme: string;
-  section: string;
-  newContent: string;
-}): string => {
+}) => {
   const preamble =
     "<!-- the following section is auto-generated, do not edit -->";
   const startMarker = `<!-- AUTOGEN:${section.toUpperCase()} START -->`;
@@ -77,7 +79,7 @@ const updateReadme = ({
   return pre + wrapped + end;
 };
 
-const readme = Deno.readTextFileSync(path.join(__dirname, "README.md"));
+const readme = fs.readFileSync(path.join(__dirname, "README.md")).toString();
 const newcontent = updateReadme({
   readme,
   section: "ini",
@@ -96,4 +98,4 @@ THEMES = ${
 `,
 });
 
-Deno.writeTextFileSync(path.join(__dirname, "README.md"), newcontent);
+fs.writeFileSync(path.join(__dirname, "README.md"), newcontent);

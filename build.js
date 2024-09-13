@@ -20,7 +20,7 @@ $surface1: #131313;
 $surface0: #121212;
 $base: #111111;
 $mantle: #101010;
-$crust: #000000;
+$crust: #090909;
 
 @import "theme";
 `;

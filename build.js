@@ -11,7 +11,6 @@ const builder = (flavor, accent) => `
 @import "@catppuccin/palette/scss/${flavor}";
 $accent: $${accent};
 $isDark: ${flavor !== "latte"};
-@import "theme";
 
 $overlay2: #202020;
 $overlay1: #191919;
@@ -22,6 +21,8 @@ $surface0: #121212;
 $base: #111111;
 $mantle: #101010;
 $crust: #000000;
+
+@import "theme";
 `;
 
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
